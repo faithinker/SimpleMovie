@@ -23,8 +23,9 @@ class HomeView: UIBasePreviewType {
     // MARK: - init
     override init(naviType: BaseNavigationShowType = .centerTitle) {
         super.init(naviType: naviType)
-        naviBar.title = "테스트"
+        naviBar.title = "movie"
         setupLayout()
+        bindData()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -32,11 +33,26 @@ class HomeView: UIBasePreviewType {
     }
     
     // MARK: - View
-    lazy var testButton = UIButton().then {
+    lazy var descriptionLabel = UILabel().then {
+        $0.text = "최소 평점을 입력하세요 (0~9)"
+        $0.font = .notoSans(size: 15)
+    }
+    
+    lazy var textfield = UITextField().then {
+        $0.placeholder = "(0~9)"
+        $0.borderStyle = .roundedRect
+        $0.keyboardType = .numberPad
+        $0.returnKeyType = .done
+    }
+    
+    lazy var nextButton = UIButton().then {
         $0.backgroundColor = .systemBlue ~ 50%
-        $0.setTitle("로드", for: .normal)
+        $0.setTitle("다음", for: .normal)
         $0.rx.tap
-            .map { .test }
+            .map { [weak self] in
+                guard let `self` = self else { return .rate(nil) }
+                return .rate(self.textfield.text)
+            }
             .bind(to: actionRelay)
             .disposed(by: rx.disposeBag)
             
@@ -49,14 +65,31 @@ class HomeView: UIBasePreviewType {
     func setupLayout() {
         backgroundColor = .white
         
-        addSubviews([testButton])
-        
-        testButton.snp.makeConstraints {
-            $0.center.equalToSuperview()
-            $0.width.equalTo(180)
-            $0.height.equalTo(65)
+        addSubviews([descriptionLabel, textfield, nextButton])
+        descriptionLabel.snp.makeConstraints {
+            $0.top.equalTo(naviBar.snp.bottom).offset(15)
+            $0.leading.equalToSuperview().offset(15)
         }
         
+        textfield.snp.makeConstraints {
+            $0.top.equalTo(descriptionLabel.snp.bottom).offset(15)
+            $0.leading.trailing.equalToSuperview().inset(15)
+        }
+
+        nextButton.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(15)
+            $0.height.equalTo(35)
+            $0.bottom.equalToSuperview().offset(-10)
+        }
+        
+    }
+    
+    func bindData() {
+        textfield.rx.observe(String.self, "text")
+            .subscribe(onNext: {
+                print("Ob Text: \($0 ?? "Error")")
+            }).disposed(by: rx.disposeBag)
     }
     
     /// User Input

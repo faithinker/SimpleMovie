@@ -12,7 +12,7 @@ import RxSwift
 import RxFlow
 
 enum HomeActionType {
-    case test
+    case rate(String?)
 }
 
 class HomeViewModel: ViewModelType, Stepper {
@@ -39,8 +39,20 @@ class HomeViewModel: ViewModelType, Stepper {
     
     func actionForButton(_ type: HomeActionType) {
         switch type {
-        case .test:
-            movieListLoad(limit: 10, 1, 5)
+        case .rate(let text):
+            print("TT: \(text ?? "Error")")
+            guard let textRate = text else { print("값을 입력해주세요!!!"); return }
+            
+            if let isNumber = Int(textRate) {
+                if isNumber >= 0 && isNumber < 10 {
+                    //movieListLoad(limit: 10, 1, 5)
+                    steps.accept(MainSteps.movieList)
+                } else {
+                    print("0~9사이의 값을 입력해주세요!!!!")
+                }
+            } else {
+                print("숫자가 아닙니다...!!")
+            }
         }
     }
     

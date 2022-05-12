@@ -35,4 +35,8 @@ enum MainSteps: Step {
     case home
     case search
     case moreSee
+    
+    
+    case movieList
+    case movieDetail
 }
