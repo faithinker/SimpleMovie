@@ -43,6 +43,7 @@ class HomeView: UIBasePreviewType {
         $0.borderStyle = .roundedRect
         $0.keyboardType = .numberPad
         $0.returnKeyType = .done
+        $0.text = "2"
     }
     
     lazy var nextButton = UIButton().then {

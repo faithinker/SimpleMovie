@@ -51,7 +51,8 @@ class MovieDetailViewController: UIBaseViewController, ViewModelProtocol {
     func setupLayout() {
         view.addSubview(subView)
         subView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-BaseTabBarController.shared.tabBarHeight)
         }
     }
     

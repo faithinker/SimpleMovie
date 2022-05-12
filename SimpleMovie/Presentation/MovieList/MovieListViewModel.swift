@@ -25,6 +25,10 @@ class MovieListViewModel: ViewModelType, Stepper {
     
     var disposeBag = DisposeBag()
     
+    init(number: Int) {
+        
+    }
+    
     // TODO: - Deinit 개발 완료 한 뒤 메모리가 정상적으로 해제 되면 삭제!
     deinit {
         Log.d("로그 : \(self)!!")

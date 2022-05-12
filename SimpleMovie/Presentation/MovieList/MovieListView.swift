@@ -19,9 +19,17 @@ class MovieListView: UIBasePreviewType {
     
     let actionRelay = PublishRelay<MovieListActionType>()
     
+    let mock: [SampleMovie] = [
+        SampleMovie(movieName: "닥터 스트레인지", rate: 8.8),
+        SampleMovie(movieName: "범죄도시2", rate: 9.2),
+        SampleMovie(movieName: "민스미트 작전", rate: 5.8),
+        SampleMovie(movieName: "봄날", rate: 6.3),
+    ]
+    
     // MARK: - init
-    override init(naviType: BaseNavigationShowType = .none) {
+    override init(naviType: BaseNavigationShowType = .backTitle) {
         super.init(naviType: naviType)
+        naviBar.title = "Back"
         setupLayout()
         bindData()
     }
@@ -36,19 +44,22 @@ class MovieListView: UIBasePreviewType {
     }
     
     // MARK: - View
-    lazy var label = UILabel().then {
-        $0.text = "MovieList View"
-        $0.textColor = .red
+    lazy var tableView = UITableView().then {
+        $0.rowHeight = 50
     }
     
     // MARK: - Outlets
     
     // MARK: - Methods
     func setupLayout() {
-        addSubview(label)
-        label.snp.makeConstraints {
-            $0.center.equalToSuperview()
+        backgroundColor = .white
+        addSubview(tableView)
+        
+        tableView.snp.makeConstraints {
+            $0.top.equalTo(naviBar.snp.bottom)
+            $0.leading.bottom.trailing.equalToSuperview()
         }
+        
     }
     
     // MARK: - SetupDI
@@ -64,7 +75,34 @@ class MovieListView: UIBasePreviewType {
     }
     
     func bindData() {
-        // d
+        Observable.just(mock).bind(to: tableView.rx.items) { tableview,
+            row, element in
+            
+            let cell = UITableViewCell(style: .default, reuseIdentifier: "Cell")
+            
+            lazy var title: String = element.movieName
+            
+            lazy var moviTitle = UILabel().then {
+                $0.text = title
+            }
+            
+            lazy var rateText: String = "\(element.rate)"
+            
+            lazy var rate = UILabel().then {
+                $0.text = rateText
+            }
+            
+            cell.addSubviews([moviTitle, rate])
+            moviTitle.snp.makeConstraints {
+                $0.centerY.equalToSuperview()
+                $0.leading.equalToSuperview().offset(15)
+            }
+            rate.snp.makeConstraints {
+                $0.centerY.equalToSuperview()
+                $0.trailing.equalToSuperview().offset(-15)
+            }
+            return cell
+        }.disposed(by: rx.disposeBag)
     }
 }
 
@@ -97,3 +135,9 @@ struct MovieList_Previews: PreviewProvider {
     }
 }
 #endif
+
+
+struct SampleMovie: Decodable {
+    let movieName: String
+    let rate: Double
+}

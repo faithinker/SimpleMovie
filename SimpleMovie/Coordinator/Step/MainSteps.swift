@@ -37,6 +37,6 @@ enum MainSteps: Step {
     case moreSee
     
     
-    case movieList
+    case movieList(Int)
     case movieDetail
 }

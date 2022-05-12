@@ -43,10 +43,9 @@ class HomeViewModel: ViewModelType, Stepper {
             print("TT: \(text ?? "Error")")
             guard let textRate = text else { print("값을 입력해주세요!!!"); return }
             
-            if let isNumber = Int(textRate) {
-                if isNumber >= 0 && isNumber < 10 {
-                    //movieListLoad(limit: 10, 1, 5)
-                    steps.accept(MainSteps.movieList)
+            if let number = Int(textRate) {
+                if number >= 0 && number < 10 {
+                    steps.accept(MainSteps.movieList(number))
                 } else {
                     print("0~9사이의 값을 입력해주세요!!!!")
                 }
@@ -57,7 +56,7 @@ class HomeViewModel: ViewModelType, Stepper {
     }
     
     
-    func movieListLoad(limit: Int, _ page: Int, _ minimumRating: Int) {
+    func movieListLoad(limit: Int = 10, _ page: Int = 1, _ minimumRating: Int) {
         _ = NetworkService.movieList(limit: limit, page: page, minimumRating: minimumRating)
             .asObservable()
             .subscribe(onNext: { data in
