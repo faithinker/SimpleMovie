@@ -43,13 +43,18 @@ class HomeView: UIBasePreviewType {
         $0.borderStyle = .roundedRect
         $0.keyboardType = .numberPad
         $0.returnKeyType = .done
-        $0.text = "2"
     }
     
     lazy var nextButton = UIButton().then {
-        $0.backgroundColor = .systemBlue ~ 50%
+        $0.tintColor = .white
         $0.setTitle("다음", for: .normal)
+        $0.setBackgroundColor(UIColor(121, 214, 249), for: .normal)
+        $0.setBackgroundColor(.lightGray, for: .highlighted)
+        $0.setBackgroundColor(UIColor(26, 71, 102), for: .disabled)
+        
+        
         $0.rx.tap
+            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .map { [weak self] in
                 guard let `self` = self else { return .rate(nil) }
                 return .rate(self.textfield.text)
@@ -90,13 +95,20 @@ class HomeView: UIBasePreviewType {
         textfield.rx.observe(String.self, "text")
             .subscribe(onNext: {
                 print("Ob Text: \($0 ?? "Error")")
-            }).disposed(by: rx.disposeBag)
+            }).disposed(by: rx.disposeBag)            
     }
     
     /// User Input
     @discardableResult
     func setupDI(relay: PublishRelay<HomeActionType>) -> Self {
         actionRelay.bind(to: relay).disposed(by: rx.disposeBag)
+        return self
+    }
+    
+    /// 버튼 터치 가능 여부
+    @discardableResult
+    func setupDI(observable: Observable<Bool>) -> Self {
+        observable.bind(to: nextButton.rx.isEnabled).disposed(by: rx.disposeBag)
         return self
     }
 }

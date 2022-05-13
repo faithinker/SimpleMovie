@@ -40,6 +40,7 @@ class MovieDetailView: UIBasePreviewType {
     lazy var movieTitle = UILabel().then {
         $0.font = .notoSans(.bold, size: 19)
         $0.text = "Movie Title"
+        $0.numberOfLines = 0
     }
     
     lazy var rateLabel = UILabel().then {
@@ -60,6 +61,7 @@ class MovieDetailView: UIBasePreviewType {
         movieTitle.snp.makeConstraints {
             $0.top.equalTo(naviBar.snp.bottom).offset(10)
             $0.leading.equalToSuperview().offset(15)
+            $0.trailing.equalToSuperview().offset(-5)
         }
         rateLabel.snp.makeConstraints {
             $0.top.equalTo(movieTitle.snp.bottom).offset(10)
@@ -79,9 +81,9 @@ class MovieDetailView: UIBasePreviewType {
         return self
     }
     
-    func setupMovie(data: SampleMovie) {
-        self.movieTitle.text = data.movieName
-        self.rate.text = "\(data.rate)"
+    func setupMovie(detailMovie: Movie) {
+        self.movieTitle.text = detailMovie.title
+        self.rate.text = "\(detailMovie.rating)"
     }
     
     func bindData() {

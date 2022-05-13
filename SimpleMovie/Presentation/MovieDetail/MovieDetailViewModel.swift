@@ -25,9 +25,9 @@ class MovieDetailViewModel: ViewModelType, Stepper {
     
     var disposeBag = DisposeBag()
     
-    var movie: SampleMovie
+    var movie: Movie
     
-    init(data: SampleMovie) {
+    init(data: Movie) {
         movie = data
     }
     
@@ -61,12 +61,12 @@ class MovieDetailViewModel: ViewModelType, Stepper {
     }
     
     struct Output {
-        let data: SampleMovie
+        let detailMovie: Movie
     }
     
     func transform(req: ViewModel.Input) -> ViewModel.Output {
         req.naviBarTrigger.bind(to: actionForNaviBar.inputs).disposed(by: disposeBag)
-        return Output(data: movie)
+        return Output(detailMovie: movie)
     }
     
     

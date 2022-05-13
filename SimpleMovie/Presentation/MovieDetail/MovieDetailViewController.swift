@@ -44,7 +44,7 @@ class MovieDetailViewController: UIBaseViewController, ViewModelProtocol {
         subView
             .setupDI(relay: actionRelay)
         
-        subView.setupMovie(data: res.data)
+        subView.setupMovie(detailMovie: res.detailMovie)
     }
     
     // MARK: - View

@@ -33,9 +33,10 @@ class HomeViewController: UIBaseViewController, ViewModelProtocol {
     
     // MARK: - Binding
     func bindingViewModel() {
-        _ = viewModel.transform(req: ViewModel.Input(actionTrigger: actionRelay))
+        let res = viewModel.transform(req: ViewModel.Input(actionTrigger: actionRelay))
         
         subView.setupDI(relay: actionRelay)
+        subView.setupDI(observable: res.isEnable)
     }
     
     // MARK: - View

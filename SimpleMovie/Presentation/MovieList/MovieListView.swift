@@ -19,13 +19,6 @@ class MovieListView: UIBasePreviewType {
     
     let actionRelay = PublishRelay<MovieListActionType>()
     
-    let mock: [SampleMovie] = [
-        SampleMovie(movieName: "닥터 스트레인지", rate: 8.8),
-        SampleMovie(movieName: "범죄도시2", rate: 9.2),
-        SampleMovie(movieName: "민스미트 작전", rate: 5.8),
-        SampleMovie(movieName: "봄날", rate: 6.3),
-    ]
-    
     // MARK: - init
     override init(naviType: BaseNavigationShowType = .backTitle) {
         super.init(naviType: naviType)
@@ -70,23 +63,19 @@ class MovieListView: UIBasePreviewType {
         return self
     }
     
-    func setupDI(observable: Observable<[Model]>) {
-        // model Dependency Injection
-    }
-    
-    func bindData() {
-        Observable.just(mock).bind(to: tableView.rx.items) { tableview,
-            row, element in
+    func setupDI(observable: Observable<[Movie]>) {
+        observable.do(onNext: { _ in }).bind(to: tableView.rx.items) { tableview, row, element in
             
             let cell = UITableViewCell(style: .default, reuseIdentifier: "Cell")
             
-            lazy var title: String = element.movieName
+            lazy var title: String = element.title
             
             lazy var moviTitle = UILabel().then {
                 $0.text = title
+                $0.numberOfLines = 0
             }
             
-            lazy var rateText: String = "\(element.rate)"
+            lazy var rateText: String = "\(element.rating)"
             
             lazy var rate = UILabel().then {
                 $0.text = rateText
@@ -96,16 +85,20 @@ class MovieListView: UIBasePreviewType {
             moviTitle.snp.makeConstraints {
                 $0.centerY.equalToSuperview()
                 $0.leading.equalToSuperview().offset(15)
+                $0.trailing.equalTo(rate.snp.leading).offset(-5)
             }
             rate.snp.makeConstraints {
                 $0.centerY.equalToSuperview()
                 $0.trailing.equalToSuperview().offset(-15)
             }
             return cell
-        }.disposed(by: rx.disposeBag)
-        
+            
+        }
+    }
+    
+    func bindData() {
         //detail
-        tableView.rx.modelSelected(SampleMovie.self)
+        tableView.rx.modelSelected(Movie.self)
             .subscribe(onNext: { [weak self] in
                 guard let `self` = self else { return }
                 self.actionRelay.accept(.detailMovie($0))
@@ -142,9 +135,3 @@ struct MovieList_Previews: PreviewProvider {
     }
 }
 #endif
-
-
-struct SampleMovie: Decodable {
-    let movieName: String
-    let rate: Double
-}
