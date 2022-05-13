@@ -25,6 +25,12 @@ class MovieDetailViewModel: ViewModelType, Stepper {
     
     var disposeBag = DisposeBag()
     
+    var movie: SampleMovie
+    
+    init(data: SampleMovie) {
+        movie = data
+    }
+    
     // TODO: - Deinit 개발 완료 한 뒤 메모리가 정상적으로 해제 되면 삭제!
     deinit {
         Log.d("로그 : \(self)!!")
@@ -55,11 +61,12 @@ class MovieDetailViewModel: ViewModelType, Stepper {
     }
     
     struct Output {
+        let data: SampleMovie
     }
     
     func transform(req: ViewModel.Input) -> ViewModel.Output {
         req.naviBarTrigger.bind(to: actionForNaviBar.inputs).disposed(by: disposeBag)
-        return Output()
+        return Output(data: movie)
     }
     
     

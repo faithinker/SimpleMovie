@@ -20,8 +20,9 @@ class MovieDetailView: UIBasePreviewType {
     let actionRelay = PublishRelay<MovieDetailActionType>()
     
     // MARK: - init
-    override init(naviType: BaseNavigationShowType = .none) {
+    override init(naviType: BaseNavigationShowType = .backTitle) {
         super.init(naviType: naviType)
+        naviBar.title = "Back"
         setupLayout()
         bindData()
     }
@@ -36,18 +37,37 @@ class MovieDetailView: UIBasePreviewType {
     }
     
     // MARK: - View
-    lazy var label = UILabel().then {
-        $0.text = "MovieDetail View"
-        $0.textColor = .red
+    lazy var movieTitle = UILabel().then {
+        $0.font = .notoSans(.bold, size: 19)
+        $0.text = "Movie Title"
+    }
+    
+    lazy var rateLabel = UILabel().then {
+        $0.text = "평점"
+        $0.font = .notoSans(size: 15)
+    }
+    
+    lazy var rate = UILabel().then {
+        $0.text = "011"
     }
     
     // MARK: - Outlets
     
     // MARK: - Methods
     func setupLayout() {
-        addSubview(label)
-        label.snp.makeConstraints {
-            $0.center.equalToSuperview()
+        backgroundColor = .white
+        addSubviews([movieTitle, rateLabel, rate])
+        movieTitle.snp.makeConstraints {
+            $0.top.equalTo(naviBar.snp.bottom).offset(10)
+            $0.leading.equalToSuperview().offset(15)
+        }
+        rateLabel.snp.makeConstraints {
+            $0.top.equalTo(movieTitle.snp.bottom).offset(10)
+            $0.leading.equalToSuperview().offset(15)
+        }
+        rate.snp.makeConstraints {
+            $0.top.equalTo(movieTitle.snp.bottom).offset(10)
+            $0.trailing.equalToSuperview().offset(-15)
         }
     }
     
@@ -59,8 +79,9 @@ class MovieDetailView: UIBasePreviewType {
         return self
     }
     
-    func setupDI(observable: Observable<[Model]>) {
-        // model Dependency Injection
+    func setupMovie(data: SampleMovie) {
+        self.movieTitle.text = data.movieName
+        self.rate.text = "\(data.rate)"
     }
     
     func bindData() {

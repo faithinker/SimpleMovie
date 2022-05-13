@@ -22,8 +22,8 @@ class HomeFlow: BaseFlow {
             return navigateToHomeScreen()
         case .movieList(let number):
             return navigateToMovieList(num: number)
-        case .movieDetail:
-            return navigateToMovieDetail()
+        case .movieDetail(let item):
+            return navigateToMovieDetail(item: item)
         case .popViewController:
             _ = self.navigationController.popViewController(animated: true)
             return .none
@@ -59,8 +59,8 @@ extension HomeFlow {
             .oneStepPushBy(navigationController)
     }
     
-    private func navigateToMovieDetail() -> FlowContributors {
-        return FlowSugar(viewModel: MovieDetailViewModel())
+    private func navigateToMovieDetail(item: SampleMovie) -> FlowContributors {
+        return FlowSugar(viewModel: MovieDetailViewModel(data: item))
             .presentable(MovieDetailViewController.self)
             .oneStepPushBy(navigationController)
     }

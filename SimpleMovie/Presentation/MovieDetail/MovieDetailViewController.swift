@@ -38,11 +38,13 @@ class MovieDetailViewController: UIBaseViewController, ViewModelProtocol {
     
     // MARK: - Binding
     func bindingViewModel() {
-        _ = viewModel.transform(req: ViewModel.Input(naviBarTrigger: subView.naviBar.navigationAction,
+        let res = viewModel.transform(req: ViewModel.Input(naviBarTrigger: subView.naviBar.navigationAction,
                                                      actionTrigger: actionRelay))
         
         subView
             .setupDI(relay: actionRelay)
+        
+        subView.setupMovie(data: res.data)
     }
     
     // MARK: - View

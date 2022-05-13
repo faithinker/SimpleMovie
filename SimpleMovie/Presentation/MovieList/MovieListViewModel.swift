@@ -13,7 +13,7 @@ import RxFlow
 import Action
 
 enum MovieListActionType {
-    
+    case detailMovie(SampleMovie)
 }
 
 class MovieListViewModel: ViewModelType, Stepper {
@@ -48,6 +48,8 @@ class MovieListViewModel: ViewModelType, Stepper {
     lazy var actionForButton = Action<MovieListActionType, Void> { [weak self] in
         guard let `self` = self else { return .empty() }
         switch $0 {
+        case .detailMovie(let item):
+            self.steps.accept(MainSteps.movieDetail(item))
         default: break
         }
         return .empty()
@@ -63,6 +65,7 @@ class MovieListViewModel: ViewModelType, Stepper {
     
     func transform(req: ViewModel.Input) -> ViewModel.Output {
         req.naviBarTrigger.bind(to: actionForNaviBar.inputs).disposed(by: disposeBag)
+        req.actionTrigger.bind(to: actionForButton.inputs).disposed(by: disposeBag)
         return Output()
     }
     

@@ -103,6 +103,13 @@ class MovieListView: UIBasePreviewType {
             }
             return cell
         }.disposed(by: rx.disposeBag)
+        
+        //detail
+        tableView.rx.modelSelected(SampleMovie.self)
+            .subscribe(onNext: { [weak self] in
+                guard let `self` = self else { return }
+                self.actionRelay.accept(.detailMovie($0))
+            }).disposed(by: rx.disposeBag)
     }
 }
 
